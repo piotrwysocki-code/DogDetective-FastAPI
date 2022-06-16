@@ -10,20 +10,13 @@ import json
 import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.image as pltimg
-from pickle_mixin import test
 import tensorflow as tf
 from tqdm import tqdm
-from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential, load_model
 from keras import layers
 from keras import utils as np_utils
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from keras.preprocessing.image import ImageDataGenerator, load_img
-from keras.utils.np_utils import to_categorical
-from keras.layers import Conv2D, GlobalAveragePooling2D, Dense, Flatten, Dropout, Activation, BatchNormalization, InputLayer, Lambda, Input
+from keras.preprocessing.image import ImageDataGenerator
 from array import *
-from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from keras.models import load_model
 
 features = load_model("120breedfeatures.h5")
