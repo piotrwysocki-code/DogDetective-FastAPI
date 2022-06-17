@@ -1,16 +1,14 @@
 from fastapi import FastAPI, File, UploadFile
-import shutil
 import numpy as np
 import os
 import cv2
-import random
-import time
-import csv
-import json
 import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import keras.applications.inception_v3
+import keras.applications.xception
+import keras.applications.inception_resnet_v2
+import keras.applications.nasnet
 from tqdm import tqdm
 from keras.models import Model, Sequential, load_model
 from keras import layers
@@ -31,7 +29,7 @@ app = FastAPI()
 with open('categoryDict.pkl', 'rb') as handle:
     categoryDict = pickle.load(handle)
 
-for i in range (0, 120):
+for i in range(0, 120):
     dogBreeds.append(i)
     results.append(categoryDict[i])
 
@@ -51,8 +49,8 @@ async def classify(file: UploadFile):
         print(e)
     finally:
         await file.close()
-    
-    result = predict_breed(r'C:\Users\Hugh Mungus\Documents\FastAPI\DogDetectiveAPI\temp\uploads\\' + file.filename)
+
+    result = predict_breed(r'temp\uploads\\' + file.filename)
 
     return result
 
@@ -60,15 +58,15 @@ async def classify(file: UploadFile):
 def feature_extractor(dataframe):
     img_size = (n, n, 3)
     data_size = (len(dataframe))
-    batch_size = 8
+    batch_size = 1
 
     x = np.zeros([data_size, 9664], dtype=np.uint8)
     datagen = ImageDataGenerator()
     temp = datagen.flow_from_dataframe(dataframe,
                                        x_col='filename', class_mode=None,
-                                       batch_size=8, shuffle=False, target_size=(img_size[:2]), color_mode='rgb')
+                                       batch_size=1, shuffle=False, target_size=(img_size[:2]), color_mode='rgb')
     i = 0
-    for input_batch in tqdm(temp):
+    for input_batch in temp:
         input_batch = features.predict(input_batch)
         x[i * batch_size: (i + 1) * batch_size] = input_batch
         i += 1
@@ -102,4 +100,4 @@ def predict_breed(test_img_dir):
     if(os.path.exists(test_img_dir)):
         os.remove(test_img_dir)
 
-    return temp.to_json(orient = 'records')
+    return temp.to_json(orient='records')
