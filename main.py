@@ -9,7 +9,6 @@ import keras.applications.inception_v3
 import keras.applications.xception
 import keras.applications.inception_resnet_v2
 import keras.applications.nasnet
-from tqdm import tqdm
 from keras.models import Model, Sequential, load_model
 from keras import layers
 from keras import utils as np_utils
