@@ -49,7 +49,7 @@ async def classify(file: UploadFile):
     finally:
         await file.close()
 
-    result = predict_breed(r'temp\uploads\\' + file.filename)
+    result = predict_breed(r'temp/uploads/' + file.filename)
 
     return result
 
