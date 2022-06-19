@@ -35,21 +35,27 @@ for i in range(0, 120):
 
 @app.get("/")
 def index():
-    return {"name": "Initial Data"}
+    return {"name": "Dog Detective"}
 
 
 @app.post("/api/classify")
 async def classify(file: UploadFile):
     try:
         contents = await file.read()
-        with open('temp/uploads/' + file.filename, 'wb') as f:
+        filePath = 'temp/uploads/' + file.filename
+        with open(filePath, 'wb') as f:
             f.write(contents)
     except Exception as e:
         print(e)
+        if(os.path.exists(filePath)):
+            os.remove(filePath)
     finally:
         await file.close()
 
-    result = predict_breed(r'temp/uploads/' + file.filename)
+        result = predict_breed(filePath)
+
+        if(os.path.exists(filePath)):
+            os.remove(filePath)
 
     return result
 
@@ -75,9 +81,6 @@ def feature_extractor(dataframe):
 
 
 def predict_breed(test_img_dir):
-    test_img = cv2.imread(test_img_dir)
-    res = cv2.resize(test_img, (n, n), interpolation=cv2.INTER_LINEAR)
-    plt.imshow(res)
     test_img_uri = np.asarray(test_img_dir)
 
     imDF = pd.DataFrame({
@@ -93,10 +96,6 @@ def predict_breed(test_img_dir):
     })
 
     column = resultsDF["Confidence"]
-    maxIndex = column.idxmax()
     temp = resultsDF.nlargest(3, "Confidence")
-
-    if(os.path.exists(test_img_dir)):
-        os.remove(test_img_dir)
 
     return temp.to_json(orient='records')
