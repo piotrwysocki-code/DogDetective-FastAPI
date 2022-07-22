@@ -32,11 +32,20 @@ for i in range(0, 120):
     dogBreeds.append(i)
     results.append(categoryDict[i])
 
-
 @app.get("/")
 def index():
-    return {"name": "Dog Detective"}
+    return "Dog Detective FastAPI Server"
 
+@app.get("/breeds")
+def index():
+    return categoryDict
+
+@app.get("/breeds/{id}")
+def index(id: int):
+    if(id in dogBreeds):
+        return categoryDict[id]
+    else:
+        return "Breed Not Found"
 
 @app.post("/api/classify")
 async def classify(file: UploadFile):
